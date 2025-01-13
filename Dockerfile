@@ -11,7 +11,8 @@
 
 
 #FROM eclipse-temurin:17-jdk-jammy as builder
-FROM maven:3.8.6-eclipse-temurin-11-alpine AS maven
+# FROM maven:3.8.6-eclipse-temurin-11-alpine AS maven
+FROM maven:3.9.8-eclipse-temurin-21 AS maven
 RUN apk update && apk add git && apk add net-tools procps openssh-client openssh-server
 RUN mkdir -p $HOME/images/lib/ && cd $HOME/images/lib/
 WORKDIR /app
