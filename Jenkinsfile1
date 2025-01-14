@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Git Checkout') {
+            steps {
+                script {
+                    git url: 'https://github.com/syskantechnosoft/eureka-server2025.git'
+                    echo 'git checkout is done, code pulled from GitHub to Jenkins workspace'
+                }
+            }
+        }
+        stage('Mvn Build') {
+            steps {
+                script {
+                    bat 'mvn clean install'
+                    echo 'maven build is done'
+                }
+            }
+        }
+        stage('Docker Image') {
+            steps {
+                echo "BUILD_NUMBER is: ${BUILD_NUMBER}"
+                bat 'docker build -t eureka-server-i -f Dockerfile .'
+                echo 'docker image is created'
+            }
+        }
+        stage('Docker Deploy') {
+            steps {
+                bat 'docker container rm -f eureka-server-c || true'
+                bat 'docker run --name eureka-server-c -itd -p 8761:8761 eureka-server-i'
+                echo 'docker container is created'
+                echo 'docker container is running'
+            }
+        }
+    }
+}
